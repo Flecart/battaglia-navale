@@ -22,49 +22,24 @@ export class gameHandler {
         return game.id
     }
 
+    findGame(gameId: string): Game {
+        let game = this.games.get(gameId);
+        if (game === undefined) {
+            throw new Error('game not found');
+        }
+        return game;
+    }
+
     attack(gameId: string, playerId: string, position: Position): string {
         let game = this.games.get(gameId);
         if (game === undefined) {
             throw new Error('game not found');
         }
 
-        let result: string; 
-        try {
-            result = game.attack(playerId, position);
-        } catch (e) {
-            throw new Error(e.message);
-        }
-
-        return 
-
-        if (game.getPlayerId() !== playerId) {
-            throw new Error('wrong player');
-        }
-
-        const currPlayer = game.turn === 1 ? game.player1 : game.player2;
-        const otherPlayer = game.turn === 1 ? game.player2 : game.player1;
-        const cellValue = otherPlayer.ownBoard.getCellAt(position);
-
-        if (cellValue === CellType.UNKNOWN) { // TODO(team): cambia questo valore hardcoded 0 in una costante (o enums)
-            return "miss";
-        }
-
-        const ship = game.fleet.getShip(cellValue)
-        if (ship === null) {
-            throw new Error('ship not found');
-        }
-        // ship.reduceHealth();
-
-        if (ship.getHealth() === 0) {
-            game.fleet.removeShip(ship);
-        }
-
-        game.nextTurn();
-        return "hit";
+        return game.attack(playerId, position);
     }
 
     removeGame(gameId: string): boolean {
         return this.games.delete(gameId); // true if delete is successfull, false otherwise
     }
-    
 }

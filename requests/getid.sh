@@ -1,0 +1,1 @@
+curl localhost:3000/api/getid/$1

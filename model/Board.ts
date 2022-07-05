@@ -6,10 +6,10 @@ export class Board {
 
     constructor(size: number) {
         this.size = size; 
-        this.board = Array.from(Array(size), () => new Array(size));
+        this.board = Array.from(Array(size), () => new Array(size)); // TODO(checka se è tutto a zero)
     }
 
-    getValue(position: Position): number {
+    getCellAt(position: Position): number {
         return this.board[position.x][position.y];
     }
 }
