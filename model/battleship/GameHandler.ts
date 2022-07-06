@@ -22,30 +22,12 @@ export class gameHandler {
         return game.id
     }
 
-    findGame(gameId: string): Game {
+    findGame(gameId: string): Game | Error {
         let game = this.games.get(gameId);
         if (game === undefined) {
-            throw new Error('game not found');
+            return new Error('game not found');
         }
         return game;
-    }
-
-    attack(gameId: string, playerId: string, position: Position): string {
-        let game = this.games.get(gameId);
-        if (game === undefined) {
-            throw new Error('game not found');
-        }
-
-        return game.attack(playerId, position);
-    }
-
-    placeShip(gameId: string, playerId: string, shipId: number, posSegment: Segment): void {
-        let game = this.games.get(gameId);
-        if (game === undefined) {
-            throw new Error('game not found');
-        }
-
-        game.placeShip(playerId, shipId, posSegment);
     }
 
     removeGame(gameId: string): boolean {

@@ -25,20 +25,20 @@ export class Player {
     } 
 
     hasFinishedPlacingShips(): boolean {
-        return this.fleet.isFleetEmpty();
+        return this.fleet.isFleetPlaced();
     }
 
-    placeShip(shipId: number, posSegment: Segment): void {
+    placeShip(shipId: number, posSegment: Segment): void | Error {
         if (this.fleet.isFleetPlaced()) {
-            throw new Error("fleet already placed, cannot place more ships");
+            return new Error("fleet already placed, cannot place more ships");
         }
         const currShip = this.fleet.getShipById(shipId);
         if (currShip === null) {
-            throw new Error("ship not found when trying to place ship");
+            return new Error("ship not found when trying to place ship");
         }
 
         if (posSegment.length() !== currShip.length) {
-            throw new Error("ship length does not match when trying to place it");
+            return new Error("ship length does not match when trying to place it");
         }
 
         this.ownBoard.placeShip(shipId, posSegment);

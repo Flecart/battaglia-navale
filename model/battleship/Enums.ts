@@ -28,8 +28,8 @@ export enum ShipType {
 
 // CONFIG numero di navi per ogni giocatore
 export const ShipNumbers = {
-    [ShipType.DESTROYER]: 4,
-    [ShipType.FRIGATES]: 3,
-    [ShipType.CRUISER]: 2,
-    [ShipType.AIRCRAFT]: 1,
+    [ShipType.DESTROYER]: 2,
+    // [ShipType.FRIGATES]: 3,
+    // [ShipType.CRUISER]: 2,
+    // [ShipType.AIRCRAFT]: 1,
 }

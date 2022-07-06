@@ -2,8 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Player } from "@game/Player";
 import { Position, Segment } from '@game/Structs';
-import { CellType, GameStatus,  } from '@game/Enums';
-import { GameLog } from '@game/GameLog';
+import { CellType, GameStatus } from '@game/Enums';
 export class Game {
     id: string;
     player1: Player;
@@ -11,16 +10,12 @@ export class Game {
     turn: number;
     idToDistribute: number;
     gameStatus: GameStatus;
-    gameLog : GameLog;
 
     constructor(usernamePlayer1 : string, usernamePlayer2 : string, boardSize: number = 10) {
         this.id = uuidv4();
         this.player1 = new Player(boardSize, usernamePlayer1);
         this.player2 = new Player(boardSize, usernamePlayer2);
         this.turn = 1;
-
-        this.gameLog = new GameLog();
-
         this.gameStatus = GameStatus.WAITING_FOR_PLAYERS;
         this.idToDistribute = 1; // usato per distribuire l'id, serve nella fase di creazione del gioco
     }
@@ -39,10 +34,10 @@ export class Game {
     // deve bastare come una forma di autenticazione per il gioco, quindi invece di UUID
     // si potrebbe generare qualcosa come cookie, token, ecc e settarlo al giocatore, e anche qui
     // così si fa check su quello 
-    distributeId(): string {
+    distributeId(): string | Error {
         // WARNING: non spostare questo pezzo, si rompe la if per cambiare stato sotto.
         if (this.gameStatus !== GameStatus.WAITING_FOR_PLAYERS) {
-            throw new Error('game already started, can\'t request more IDS');
+            return new Error('game already started, can\'t request more IDS');
         }
         
         let id: string; 
@@ -51,8 +46,9 @@ export class Game {
         } else if (this.idToDistribute === 2) {
             id = this.player2.id; 
         } else {
-            throw new Error('invalid id, can\'t request more IDS');
+            return new Error('invalid id, can\'t request more IDS');
         }
+        this.idToDistribute++;
 
         // TODO(ang): questa funzione non è dentro l'ambito di responsabilità di chi
         // distribuisce l'Id, non dovrebbe essere qui.
@@ -60,19 +56,18 @@ export class Game {
             this.gameStatus = GameStatus.SETTING_SHIPS; 
         }
 
-        this.idToDistribute++;
         return id; 
     }
 
     // TODO(ang): non so se ritornare la stringa ha senso, ma per ora lo faccio
     // pensavo come log di quello che sta facendo...
-    attack(playerId: string, position: Position): string {
+    attack(playerId: string, position: Position): string | Error {
         if (playerId !== this.getPlayerId()) {
-            throw new Error('wrong player');
+            return new Error('wrong player');
         }
 
         if (this.gameStatus !== GameStatus.PLAYING) {
-            throw new Error('wrong game status: you can\n\'t attack if the game is not started');
+            return new Error('wrong game status: you can\'t attack when the game has not started');
         }
          
         const currPlayer = this.turn === 1 ? this.player1 : this.player2;
@@ -81,13 +76,12 @@ export class Game {
         const otherCellValue = otherPlayer.ownBoard.getCellAt(position);
         
         if (ownCellHitValue !== CellType.UNKNOWN) {
-            throw new Error('cell already attacked');
+            return new Error('cell already attacked');
         }
 
         // DA RICORDARE: la cella avversaria può essere solo NAVE o MARE
         if (otherCellValue === CellType.SEA) { // TODO(team): cambia questo valore hardcoded 0 in una costante (o enums)
             currPlayer.hitBoard.setCellAt(position, CellType.SEA);
-            this.gameLog.add(currPlayer, position, CellType.UNKNOWN);
             // TODO(alb) sistemare la classe board inserendo cellType
             //Costruire la Board e modificare la board hit 
             
@@ -100,25 +94,28 @@ export class Game {
         return "hit"; // TODO(team): cambia questo messaggio
     }
 
-    placeShip(playerId: string, shipId: number, posSegment: Segment): void {
+    placeShip(playerId: string, shipId: number, posSegment: Segment): void | Error {
         if (playerId !== this.player1.id && playerId !== this.player2.id) {
-            throw new Error('the player does not belong to this game or does not exist');
+            return new Error('the player does not belong to this game or does not exist');
         }
 
         // TODO(team): questi check per lo status del gioco non dovrebbero essere qui
         // rendono il testing molto complicato, dato che non puoi prendere la logica delle singole funzioni da solo
         // dovremmo mettere tutta la roba per le eccezzioni da un wrapper o da qualcosa di simile
         if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
-            throw new Error('wrong game status, can\'t place ship anymore');
+            return new Error('wrong game status, can\'t place ship anymore');
         }
 
         const currPlayer = playerId === this.player1.id ? this.player1 : this.player2;
         const otherPlayer = playerId === this.player2.id ? this.player1 : this.player2;
-        currPlayer.placeShip(shipId, posSegment);
+        const err = currPlayer.placeShip(shipId, posSegment);
 
         if (currPlayer.hasFinishedPlacingShips() && otherPlayer.hasFinishedPlacingShips()) {
             this.gameStatus = GameStatus.PLAYING;
+            console.log("playing now");
         }
+
+        return err;
     }
 
     isGameOver(): boolean {

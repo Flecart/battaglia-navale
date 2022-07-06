@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { GameHandler } from "@api/create"
+import { GameHandler } from "@api/game/create"
 import { Game } from "@game/Game"
 
 type Data = {
@@ -28,24 +28,16 @@ export default function handler(
     }
 
     // validate game-id string
-    let currentGame: Game; 
-    try {
-        currentGame = GameHandler.findGame(req.query.gameId); 
-    } catch (error) {
+    const currentGame = GameHandler.findGame(req.query.gameId);
+    if (currentGame instanceof Error) {
         res.status(400).json({ error: `game with id ${req.query.gameId} wasn't found` });
         return;
     }
 
     // validate id request
-    let currentId: string;
-    try {
-        currentId = currentGame.distributeId(); 
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            res.status(400).json({ error: "invalid distribute id request" }); // TODO(ang): prova a specificare meglio il messaggio di errore
-        }
+    const currentId = currentGame.distributeId();;
+    if (currentId instanceof Error) {
+        res.status(400).json({ error: currentId.message });
         return;
     }
 

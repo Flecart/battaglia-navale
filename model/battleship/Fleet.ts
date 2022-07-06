@@ -1,5 +1,4 @@
 import { Ship } from "@game/Ship";
-
 export class Fleet {
     ships: Ship[];
     // corrisponde all'index corrispondente in ships, sa se 
@@ -73,6 +72,6 @@ export class Fleet {
     }
 
     private getShipIndex(shipId: number): number {
-        return this.ships.findIndex(s => s.id === shipId);
+        return this.ships.findIndex(ship => ship.id === shipId);
     }
 }
