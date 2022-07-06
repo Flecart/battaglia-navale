@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { Ship } from "./Ship";
-import { Board } from "./Board";
-import { Fleet } from './Fleet';
-import {kCellOffset, ShipNumbers} from './Enums';
-import { Segment } from './Structs';
+import { Ship } from "@game/Ship";
+import { Board } from "@game/Board";
+import { Fleet } from '@game/Fleet';
+import {kCellOffset, ShipNumbers} from '@game/Enums';
+import { Segment } from '@game/Structs';
 export class Player {
     id: string;
     username: string;

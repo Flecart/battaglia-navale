@@ -1,4 +1,4 @@
-import { ShipType } from "./Enums";
+import { ShipType } from "@game/Enums";
 class Ship {
     type: ShipType;
     health: number;

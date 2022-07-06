@@ -1,11 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { Ship } from "./Ship";
-import { Player } from "./Player";
-import { Fleet } from "./Fleet";
-import { Position, Segment } from './Structs';
-import { CellType, GameStatus,  } from './Enums';
-import { GameLog } from './GameLog';
+import { Player } from "@game/Player";
+import { Position, Segment } from '@game/Structs';
+import { CellType, GameStatus,  } from '@game/Enums';
+import { GameLog } from '@game/GameLog';
 export class Game {
     id: string;
     player1: Player;

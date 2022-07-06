@@ -1,5 +1,5 @@
-import { Game } from "./Game";
-import { Position, Segment } from "./Structs";
+import { Game } from "@game/Game";
+import { Position, Segment } from "@game/Structs";
 
 // TODO(team): rimuovere questi commenti dopo
 // Vantaggi di questa soluzione

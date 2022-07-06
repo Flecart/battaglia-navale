@@ -1,6 +1,4 @@
-import { Ship } from "./Ship";
-import { ShipType } from "./Enums";
-import { toUnicode } from "punycode";
+import { Ship } from "@game/Ship";
 
 export class Fleet {
     ships: Ship[];

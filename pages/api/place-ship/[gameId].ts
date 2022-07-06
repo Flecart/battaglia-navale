@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { GameHandler } from "../create"
-import { Game } from "/model/Game"
+import { GameHandler } from "@api/create"
+import { Game } from "@game/Game"
 
 type Data = {
     data?: string,

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { gameHandler } from '../../model/GameHandler';
+import { gameHandler } from 'model/battleship/GameHandler';
 
-import { Game } from "/model/GameHandler";
+import { Game } from "@game/Game";
 
 export const GameHandler = new gameHandler(); // TODO(team): get from global variable
 

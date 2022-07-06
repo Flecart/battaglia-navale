@@ -1,6 +1,5 @@
-import { start } from "repl";
-import { CellType } from "./Enums";
-import { Position, Segment } from "./Structs";
+import { CellType } from "@game/Enums";
+import { Position, Segment } from "@game/Structs";
 
 export class Board {
     board: number[][];
