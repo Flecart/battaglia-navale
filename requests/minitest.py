@@ -8,7 +8,7 @@ userId2 = requests.post('http://localhost:3000/api/getid/' + gameId).json()['dat
 response = requests.post('http://localhost:3000/api/attack/' + gameId, json = {
     'player': userId1,
     'position': {
-        "x": 0,
+        "x": 9,
         "y": 1
     }
 }).json()
