@@ -7,23 +7,30 @@ export class Fleet {
     // corrisponde all'index corrispondente in ships, sa se 
     // la nave è stata piazzata o meno 
     placed: boolean[]; 
-    nShipsPlaced: number; 
+    nShipsPlaced: number;
+    nShipsSunk: number;
 
     constructor(ships: Ship[]) {
         this.ships = ships;
         this.placed = new Array<boolean>(ships.length).fill(false);
         this.nShipsPlaced = 0;
+        this.nShipsSunk = 0;
     }
 
-    getShip(id: number): Ship | undefined {
-        return this.ships.find(ship => ship.id === id);
+    getShipById(shipId: number): Ship | null {
+        let index = this.getShipIndex(shipId);
+        if (index === -1) {
+            return null;
+        }
+        return this.ships[index];
     }
 
     addShip(ship: Ship) {
         this.ships.push(ship);
     }
 
-    placeShip(index: number) {
+    placeShip(shipId: number) {
+        let index = this.getShipIndex(shipId);
         if (index >= this.ships.length) {
             // TODO(team): è meglio ritornare così o lanciare un errore?
             return;
@@ -33,7 +40,8 @@ export class Fleet {
         this.nShipsPlaced += 1;
     }
 
-    isShipPlaced(index: number): boolean {
+    isShipPlaced(shipId: number): boolean {
+        let index = this.getShipIndex(shipId);
         if (index >= this.ships.length) {
             return false;
         } else {
@@ -41,11 +49,32 @@ export class Fleet {
         }
     }
 
+    applyDamage(shipId: number) {
+        let index = this.getShipIndex(shipId);
+        if (index === -1) {
+            return;
+        }
+
+        this.ships[index].reduceHealth();
+        if (this.ships[index].health == 0) {
+            this.nShipsSunk += 1;
+        }
+    }
+
     removeShip(shipId: number) {
         this.ships = this.ships.filter(s => s.id !== shipId);
     }
 
+    // checks if all ships sank down
     isFleetEmpty(): boolean {
-        return this.ships.length === 0;
+        return this.ships.length === this.nShipsSunk;
+    }
+
+    isFleetPlaced(): boolean { 
+        return this.nShipsPlaced === this.ships.length;
+    }
+
+    private getShipIndex(shipId: number): number {
+        return this.ships.findIndex(s => s.id === shipId);
     }
 }

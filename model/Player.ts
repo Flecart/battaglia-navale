@@ -4,7 +4,7 @@ import { Ship } from "./Ship";
 import { Board } from "./Board";
 import { Fleet } from './Fleet';
 import {kCellOffset, ShipNumbers} from './Enums';
-import { Position } from './Structs';
+import { Segment } from './Structs';
 export class Player {
     id: string;
     username: string;
@@ -24,13 +24,30 @@ export class Player {
         return this.fleet.isFleetEmpty();
     } 
 
-    placeShip(shipId: number, startPos: Position, endPos: Position): void {
-        this.fleet.placeShip(shipId);
-        this.ownBoard.placeShip(shipId, startPos, endPos);
-
-        
+    hasFinishedPlacingShips(): boolean {
+        return this.fleet.isFleetEmpty();
     }
 
+    placeShip(shipId: number, posSegment: Segment): void {
+        if (this.fleet.isFleetPlaced()) {
+            throw new Error("fleet already placed, cannot place more ships");
+        }
+        const currShip = this.fleet.getShipById(shipId);
+        if (currShip === null) {
+            throw new Error("ship not found when trying to place ship");
+        }
+
+        if (posSegment.length() !== currShip.length) {
+            throw new Error("ship length does not match when trying to place it");
+        }
+
+        this.ownBoard.placeShip(shipId, posSegment);
+        this.fleet.placeShip(shipId);
+
+        if (this.fleet.isFleetPlaced()) {
+            this.finalizeBoard();
+        }
+    }
 
     private getInitialFleet(): Ship[] {
         let initialId = kCellOffset;
@@ -45,11 +62,9 @@ export class Player {
         return ships;
     }
 
-
     // This function should be called when a player finishes to place ships
+    // It will set the ownBoard to all visible sea, if there is no ship onto it
     private finalizeBoard(): void {
         this.ownBoard.setUnknownToSea();
     }
-
-
 }

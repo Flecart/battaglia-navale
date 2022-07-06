@@ -1,5 +1,5 @@
 import { Game } from "./Game";
-import { Position } from "./Structs";
+import { Position, Segment } from "./Structs";
 
 // TODO(team): rimuovere questi commenti dopo
 // Vantaggi di questa soluzione
@@ -37,6 +37,15 @@ export class gameHandler {
         }
 
         return game.attack(playerId, position);
+    }
+
+    placeShip(gameId: string, playerId: string, shipId: number, posSegment: Segment): void {
+        let game = this.games.get(gameId);
+        if (game === undefined) {
+            throw new Error('game not found');
+        }
+
+        game.placeShip(playerId, shipId, posSegment);
     }
 
     removeGame(gameId: string): boolean {

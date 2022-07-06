@@ -27,10 +27,6 @@ export class Game {
         this.idToDistribute = 1; // usato per distribuire l'id, serve nella fase di creazione del gioco
     }
     
-    
-
-
-
     nextTurn() {
         this.turn = this.turn === 1 ? 2 : 1;
     }
@@ -73,7 +69,7 @@ export class Game {
     // TODO(ang): non so se ritornare la stringa ha senso, ma per ora lo faccio
     // pensavo come log di quello che sta facendo...
     attack(playerId: string, position: Position): string {
-        if (this.getPlayerId() !== playerId) {
+        if (playerId !== this.getPlayerId()) {
             throw new Error('wrong player');
         }
          
@@ -102,9 +98,21 @@ export class Game {
         return "hit"; // TODO(team): cambia questo messaggio
     }
 
-    
+    placeShip(playerId: string, shipId: number, posSegment: Segment): void {
+        if (playerId !== this.player1.id && playerId !== this.player2.id) {
+            throw new Error('the player does not belong to this game or does not exist');
+        }
+
+        if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
+            throw new Error('wrong game status, can\'t place ship anymore');
+        }
+
+        const currPlayer = playerId === this.player1.id ? this.player1 : this.player2;
+        currPlayer.placeShip(shipId, posSegment);
+    }
 
     isGameOver(): boolean {
         return this.player1.hasLost() || this.player2.hasLost(); 
     }
+
 }
