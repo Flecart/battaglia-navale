@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Ship } from "./Ship";
 import { Player } from "./Player";
 import { Fleet } from "./Fleet";
-import { Position } from './Structs';
+import { Position, Segment } from './Structs';
 import { CellType, GameStatus,  } from './Enums';
 import { GameLog } from './GameLog';
 export class Game {
@@ -72,6 +72,10 @@ export class Game {
         if (playerId !== this.getPlayerId()) {
             throw new Error('wrong player');
         }
+
+        if (this.gameStatus !== GameStatus.PLAYING) {
+            throw new Error('wrong game status: you can\n\'t attack if the game is not started');
+        }
          
         const currPlayer = this.turn === 1 ? this.player1 : this.player2;
         const otherPlayer = this.turn === 1 ? this.player2 : this.player1;
@@ -103,12 +107,20 @@ export class Game {
             throw new Error('the player does not belong to this game or does not exist');
         }
 
+        // TODO(team): questi check per lo status del gioco non dovrebbero essere qui
+        // rendono il testing molto complicato, dato che non puoi prendere la logica delle singole funzioni da solo
+        // dovremmo mettere tutta la roba per le eccezzioni da un wrapper o da qualcosa di simile
         if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
             throw new Error('wrong game status, can\'t place ship anymore');
         }
 
         const currPlayer = playerId === this.player1.id ? this.player1 : this.player2;
+        const otherPlayer = playerId === this.player2.id ? this.player1 : this.player2;
         currPlayer.placeShip(shipId, posSegment);
+
+        if (currPlayer.hasFinishedPlacingShips() && otherPlayer.hasFinishedPlacingShips()) {
+            this.gameStatus = GameStatus.PLAYING;
+        }
     }
 
     isGameOver(): boolean {
