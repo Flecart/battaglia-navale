@@ -4,7 +4,7 @@ import { Ship } from "@game/Ship";
 import { Board } from "@game/Board";
 import { Fleet } from '@game/Fleet';
 import {kCellOffset, ShipNumbers} from '@game/Enums';
-import { Segment } from '@game/Structs';
+import { Segment, Position } from '@game/Structs';
 export class Player {
     id: string;
     username: string;
@@ -28,6 +28,12 @@ export class Player {
         return this.fleet.isFleetPlaced();
     }
 
+    // applies damage to ship at posizion. Needs to be certain that at position there is a ship
+    applyDamage(position: Position) {
+        const shipId: number = this.ownBoard.getCellAt(position);
+        this.fleet.applyDamage(shipId);
+    }
+
     placeShip(shipId: number, posSegment: Segment): void | Error {
         if (this.fleet.isFleetPlaced()) {
             return new Error("fleet already placed, cannot place more ships");
@@ -37,16 +43,28 @@ export class Player {
             return new Error("ship not found when trying to place ship");
         }
 
-        if (posSegment.length() !== currShip.length) {
+        // -1 perché se i punti sono ad es. (0, 0), (0, 2), viene 2, ma prende 3 blocchi
+        if (posSegment.length() + 1 !== currShip.length) {
             return new Error("ship length does not match when trying to place it");
         }
 
-        this.ownBoard.placeShip(shipId, posSegment);
+        const err = this.ownBoard.placeShip(shipId, posSegment);
+        if (err !== null) {
+            return err;
+        }
+        
         this.fleet.placeShip(shipId);
 
         if (this.fleet.isFleetPlaced()) {
             this.finalizeBoard();
         }
+    }
+
+    // reset every internal variable to defaults
+    reset() {
+        this.ownBoard = new Board(this.ownBoard.size);
+        this.hitBoard = new Board(this.hitBoard.size);
+        this.fleet = new Fleet(this.getInitialFleet()); 
     }
 
     private getInitialFleet(): Ship[] {

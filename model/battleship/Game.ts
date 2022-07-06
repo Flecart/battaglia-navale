@@ -69,7 +69,8 @@ export class Game {
         if (this.gameStatus !== GameStatus.PLAYING) {
             return new Error('wrong game status: you can\'t attack when the game has not started');
         }
-         
+        
+        // TODO(ang): refactor this part, i don't want the board to be accessible in this way
         const currPlayer = this.turn === 1 ? this.player1 : this.player2;
         const otherPlayer = this.turn === 1 ? this.player2 : this.player1;
         const ownCellHitValue = currPlayer.hitBoard.getCellAt(position);
@@ -84,13 +85,18 @@ export class Game {
             currPlayer.hitBoard.setCellAt(position, CellType.SEA);
             // TODO(alb) sistemare la classe board inserendo cellType
             //Costruire la Board e modificare la board hit 
+            this.nextTurn();
             
             return "miss";
         } else {
             currPlayer.hitBoard.setCellAt(position, CellType.HIT);
+            otherPlayer.applyDamage(position);
+            if (otherPlayer.hasLost()) {
+                this.gameStatus = GameStatus.FINISHED;
+                return "win";
+            }
         }
 
-        this.nextTurn();
         return "hit"; // TODO(team): cambia questo messaggio
     }
 
@@ -116,6 +122,16 @@ export class Game {
         }
 
         return err;
+    }
+
+    restart(forceRestart: boolean): void | Error {
+        if (forceRestart !== true && this.gameStatus !== GameStatus.FINISHED) {
+            return new Error('game has not ended, can\'t restart');
+        }
+        this.player1.reset();
+        this.player2.reset();
+        this.turn = 1; 
+        this.gameStatus = GameStatus.SETTING_SHIPS;
     }
 
     isGameOver(): boolean {

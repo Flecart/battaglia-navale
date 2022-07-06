@@ -1,9 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { gameHandler } from 'model/battleship/GameHandler';
+import * as yup from "yup"
 
-import { Game } from "@game/Game";
+import { gameHandler } from '@game/GameHandler';
 
 export const GameHandler = new gameHandler(); // TODO(team): get from global variable
+
+const schema = yup.object().shape({
+    player1: yup.string().required(),
+    player2: yup.string().required(),
+}).required();
 
 type Data = {
     gameId?: string
@@ -11,17 +16,25 @@ type Data = {
 }
 
 // This endpoint is called by the client when the user wants to create a new game.
-export default function handler(
+export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
-    // TEMPORENEO, solo a scopo di debug
-    let usernamePlayer1 = "Alberto"; 
-    let usernamePlayer2 = "Angelo";
-    
+    // validate request method ONLY POST
+    if (req.method !== 'POST') {
+        res.status(405).send({ error: 'Only POST requests allowed' })
+        return
+    }
+
+    const data = await schema.validate(req.body)
+    .catch((err: { message: string; }) => {
+        res.status(400).json({ error: err.message })
+        return;
+    });
+
     let gameId: string = "";
     try {
-        gameId = GameHandler.createGame(usernamePlayer1, usernamePlayer2);
+        gameId = GameHandler.createGame(data.player1, data.player2);
     } catch (error) {
         if (error instanceof Error) {
             res.status(500).json({ error: error.message });
@@ -31,5 +44,4 @@ export default function handler(
     }
 
     res.status(200).json({ gameId: gameId });
-    // res.status(200).json({ gameId: 'you created the game!' })
 }
