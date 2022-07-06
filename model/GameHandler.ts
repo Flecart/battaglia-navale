@@ -1,5 +1,5 @@
 import { Game } from "./Game";
-import { Position } from "./structs/Position";
+import { Position } from "./Structs";
 
 // TODO(team): rimuovere questi commenti dopo
 // Vantaggi di questa soluzione

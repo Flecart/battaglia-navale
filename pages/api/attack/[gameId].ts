@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { GameHandler } from "../create"
 import { Game } from "/model/Game"
-import { Position } from "/model/structs/Position"
+import { Position } from "/model/Structs"
 
 type Data = {
     data?: string,
@@ -18,6 +18,10 @@ function parsePosition(position: any): Position {
     if (keys.length !== 2 || keys[0] !== "x" || keys[1] !== "y") {
         throw new Error("position is not a valid position, two fields x,y needed, in right order");
     }
+    
+    if (typeof position["x"] !== "number" || typeof position.y !== "number") {
+        throw new Error("position is not a valid position, x and y should be numbers");
+    }
 
     return new Position(position["x"], position["y"]);
 }
@@ -26,12 +30,13 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
+    // validate request method ONLY POST
     if (req.method !== 'POST') {
         res.status(405).send({ error: 'Only POST requests allowed' })
         return;
     }
       
-
+    // validate gameId query
     if (req.query.gameId === undefined) {
         res.status(400).json({ error: "gameId is not defined" })
         return;
@@ -40,6 +45,7 @@ export default function handler(
         return;
     }
 
+    // validate player body type
     if (typeof(req.body.player) !== 'string') {
         res.status(400).json({ error: "player is not defined" })
         return;
@@ -48,7 +54,6 @@ export default function handler(
     let position: Position = new Position(0, 0);
     try {
         position = parsePosition(req.body.position); 
-        console.log(position);
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).json({ error: error.message });
@@ -70,10 +75,11 @@ export default function handler(
         currentGame.attack(req.body.player, position);
     } catch (error) {
         if (error instanceof Error) {
-            console.log("from attack/[gameId].ts, " + error.message);
-            console.log(req.body.player, typeof(req.body.player));
+            console.log("yes here");
+            res.status(400).json({ error: error.message });
+        } else {
+            res.status(400).json({ error: "This is not inputted players turn" });
         }
-        res.status(400).json({ error: "This is not inputted players turn" });
         return;
     }
 

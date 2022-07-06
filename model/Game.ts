@@ -1,10 +1,10 @@
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Ship } from "./Ship";
 import { Player } from "./Player";
 import { Fleet } from "./Fleet";
-import { Position } from './structs/Position';
-import { CellType } from './CellType';
+import { Position } from './Structs';
+import { CellType, GameStatus,  } from './Enums';
 import { GameLog } from './GameLog';
 export class Game {
     id: string;
@@ -12,22 +12,25 @@ export class Game {
     player2: Player;
     turn: number;
     idToDistribute: number;
-    fleet: Fleet;
+    gameStatus: GameStatus;
     gameLog : GameLog;
-    ships: Ship[]; // TODO(team): cambia sto array di ship nel gestore di ship, la FLOTTA
 
     constructor(usernamePlayer1 : string, usernamePlayer2 : string, boardSize: number = 10) {
-        this.id = uuid();
+        this.id = uuidv4();
         this.player1 = new Player(boardSize, usernamePlayer1);
         this.player2 = new Player(boardSize, usernamePlayer2);
         this.turn = 1;
-        this.ships = []; // TODO(team): cambia sto array di ship nel gestore di ship, la FLOTTA
-        this.fleet = new Fleet(this.ships);
+
         this.gameLog = new GameLog();
 
+        this.gameStatus = GameStatus.WAITING_FOR_PLAYERS;
         this.idToDistribute = 1; // usato per distribuire l'id, serve nella fase di creazione del gioco
     }
     
+    
+
+
+
     nextTurn() {
         this.turn = this.turn === 1 ? 2 : 1;
     }
@@ -36,13 +39,18 @@ export class Game {
         return this.turn === 1 ? this.player1.id : this.player2.id;
     }
 
-    getOpponentId() {
-        return this.turn === 2 ? this.player1.id : this.player2.id;
-    }
-
     // ritorna l'id del giocatore, usato per settare il ruolo mentre si inizia il gioco  
     // NOTA: mi sembra sia un pò hardcoded, non so se è la soluzione migliore
+    // NOTA: invece di distribuire Id che genera UUID, l'id del giocatore non deve essere unico!
+    // deve bastare come una forma di autenticazione per il gioco, quindi invece di UUID
+    // si potrebbe generare qualcosa come cookie, token, ecc e settarlo al giocatore, e anche qui
+    // così si fa check su quello 
     distributeId(): string {
+        // WARNING: non spostare questo pezzo, si rompe la if per cambiare stato sotto.
+        if (this.gameStatus !== GameStatus.WAITING_FOR_PLAYERS) {
+            throw new Error('game already started, can\'t request more IDS');
+        }
+        
         let id: string; 
         if (this.idToDistribute === 1) {
             id = this.player1.id; 
@@ -51,6 +59,13 @@ export class Game {
         } else {
             throw new Error('invalid id, can\'t request more IDS');
         }
+
+        // TODO(ang): questa funzione non è dentro l'ambito di responsabilità di chi
+        // distribuisce l'Id, non dovrebbe essere qui.
+        if (this.idToDistribute > 2) { 
+            this.gameStatus = GameStatus.SETTING_SHIPS; 
+        }
+
         this.idToDistribute++;
         return id; 
     }
@@ -59,33 +74,28 @@ export class Game {
     // pensavo come log di quello che sta facendo...
     attack(playerId: string, position: Position): string {
         if (this.getPlayerId() !== playerId) {
-            console.log(this.getPlayerId(), playerId);
-            console.log(this.getOpponentId(), playerId);
             throw new Error('wrong player');
         }
-
+         
         const currPlayer = this.turn === 1 ? this.player1 : this.player2;
         const otherPlayer = this.turn === 1 ? this.player2 : this.player1;
-        const cellValue = otherPlayer.ownBoard.getCellAt(position);
+        const ownCellHitValue = currPlayer.hitBoard.getCellAt(position);
+        const otherCellValue = otherPlayer.ownBoard.getCellAt(position);
+        
+        if (ownCellHitValue !== CellType.UNKNOWN) {
+            throw new Error('cell already attacked');
+        }
 
-        if (cellValue === CellType.UNKNOWN) { // TODO(team): cambia questo valore hardcoded 0 in una costante (o enums)
-            this.gameLog.add(currPlayer,position,CellType.UNKNOWN);
+        // DA RICORDARE: la cella avversaria può essere solo NAVE o MARE
+        if (otherCellValue === CellType.SEA) { // TODO(team): cambia questo valore hardcoded 0 in una costante (o enums)
+            currPlayer.hitBoard.setCellAt(position, CellType.SEA);
+            this.gameLog.add(currPlayer, position, CellType.UNKNOWN);
             // TODO(alb) sistemare la classe board inserendo cellType
             //Costruire la Board e modificare la board hit 
             
             return "miss";
-        }
-
-        const ship = this.fleet.getShip(cellValue);
-        if (ship === null) {
-            // questo non dovrebbe mai succedere, nel caso è un codice 500, ci sarà stata una corruzzione dei dati
-            // TODO(ang): scommenta questa parte dopo che si abbia fatto la posizione delle navi
-            // throw new Error('ship not found'); 
-            return "no shiphere!";
-        }
-        // ship.reduceHealth();
-        if (ship.getHealth() === 0) {
-            this.fleet.removeShip(ship);
+        } else {
+            currPlayer.hitBoard.setCellAt(position, CellType.HIT);
         }
 
         this.nextTurn();
@@ -95,6 +105,6 @@ export class Game {
     
 
     isGameOver(): boolean {
-        return this.fleet.isFleetEmpty();
+        return this.player1.hasLost() || this.player2.hasLost(); 
     }
 }

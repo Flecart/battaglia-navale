@@ -1,3 +1,4 @@
+// reprehesents a position in the model 
 export class Position {
     x: number;
     y: number;

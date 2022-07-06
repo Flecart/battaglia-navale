@@ -1,4 +1,4 @@
-import { ShipType } from "./../../../model/ShipType";
+import { ShipType } from "/model/Enums";
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 

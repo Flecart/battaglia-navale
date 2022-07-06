@@ -1,47 +1,31 @@
-import { ShipType } from "./ShipType"
-import { uuid } from "uuidv4";
+import { ShipType } from "./Enums";
 class Ship {
     type: ShipType;
     health: number;
-    id: string;
+    id: number; // serve per identificare la nave solo per il singolo giocatore.
 
-    private constructor(type: ShipType){
+    constructor(type: ShipType, id: number) {
         
         this.type = type;
-        this.health = Number(ShipType[type]);
-        this.id = uuid();
-
+        this.health = Number(type); // è anche la lunghezza della nave
+        this.id = id; 
     }
 
-
-    public getType() : ShipType {
+    getType() : ShipType {
         return this.type;
     }
 
-    public getHealth() : number {
+    getHealth() : number {
         return this.health;
     }
 
-    public getId() : string {
-        return this.id;
-    }
-
-    private reduceHealth() : void {
+    reduceHealth() : void {
         this.health -= 1; 
     }
 
-    //Check if the type is correct, in case is incorrect returns null
-    public static createShip(type : ShipType) : Ship | null {
-        
-        if(ShipType[type]){
-            return new Ship(type);
-        }
-        
-        return null;
-        
-    }
-
-
+    // NOTA(ang): la creazione di ship non è un passo che è dipendente dall'user, non credo abbia 
+    // tanto senso, quindi la cancello. 
+    // public static createShip(type : ShipType) : Ship | null { ...
 }
 
 export {Ship}

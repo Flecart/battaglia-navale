@@ -1,6 +1,6 @@
 import { Player } from "./Player";
-import { Position } from "./structs/Position";
-import { CellType } from "./CellType";
+import { Position } from "./Structs";
+import { CellType } from "./Enums";
 export class GameLog{
     log : string;
 

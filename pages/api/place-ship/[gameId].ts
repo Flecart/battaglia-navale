@@ -36,18 +36,7 @@ export default function handler(
         return;
     }
 
-    // validate id request
-    let currentId: string;
-    try {
-        currentId = currentGame.distributeId(); 
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            res.status(400).json({ error: "invalid distribute id request" }); // TODO(ang): prova a specificare meglio il messaggio di errore
-        }
-        return;
-    }
+    
 
-    res.status(200).json({data: currentId})
+    res.status(200).json({data: "boh"})
 }
