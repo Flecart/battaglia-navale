@@ -16,8 +16,8 @@ export class gameHandler {
     // TODO(team): informazioni necessari per creare un nuovo gioco?
 
     // returns the gameId
-    createGame(usernamePlayer1: string, usernamePlayer2: string): string {
-        let game = new Game(usernamePlayer1, usernamePlayer2);
+    createGame(): string {
+        let game = new Game();
         this.games.set(game.id, game)
         return game.id
     }

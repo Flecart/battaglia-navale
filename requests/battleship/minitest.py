@@ -2,8 +2,6 @@ from email.quoprimime import body_check
 import requests
 
 gameId = requests.post('http://localhost:3000/api/game/create', json = {
-    "player1": "ciao",
-    "player2": "default"
 }).json()['gameId']
 
 userId1 = requests.post('http://localhost:3000/api/game/get-id/' + gameId).json()['data']

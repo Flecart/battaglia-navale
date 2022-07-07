@@ -12,21 +12,17 @@ class Ship {
         this.id = id; 
     }
 
-    getType() : ShipType {
+    getType(): ShipType {
         return this.type;
     }
 
-    getHealth() : number {
+    getHealth(): number {
         return this.health;
     }
 
-    reduceHealth() : void {
+    reduceHealth(): void {
         this.health -= 1; 
     }
-
-    // NOTA(ang): la creazione di ship non è un passo che è dipendente dall'user, non credo abbia 
-    // tanto senso, quindi la cancello. 
-    // public static createShip(type : ShipType) : Ship | null { ...
 }
 
 export {Ship}

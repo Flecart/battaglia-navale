@@ -7,16 +7,14 @@ import {kCellOffset, ShipNumbers} from '@game/Enums';
 import { Segment, Position } from '@game/Structs';
 export class Player {
     id: string;
-    username: string;
     fleet: Fleet; // raggiude le fleet da piazzare
-    ownBoard: Board
-    hitBoard: Board
+    ownBoard: Board; // this board reprehesents own board, where the player has placed his ships
+    hitBoard: Board; // this board reprehesents the place to shoot
 
-    constructor(boardSize: number, username: string) {
+    constructor(boardSize: number) {
         this.id = uuidv4();
         this.ownBoard = new Board(boardSize);
         this.hitBoard = new Board(boardSize);
-        this.username = username;
         this.fleet = new Fleet(this.getInitialFleet()); 
     }
 

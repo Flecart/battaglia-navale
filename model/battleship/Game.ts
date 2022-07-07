@@ -11,10 +11,10 @@ export class Game {
     idToDistribute: number;
     gameStatus: GameStatus;
 
-    constructor(usernamePlayer1 : string, usernamePlayer2 : string, boardSize: number = 10) {
+    constructor(boardSize: number = 10) {
         this.id = uuidv4();
-        this.player1 = new Player(boardSize, usernamePlayer1);
-        this.player2 = new Player(boardSize, usernamePlayer2);
+        this.player1 = new Player(boardSize);
+        this.player2 = new Player(boardSize);
         this.turn = 1;
         this.gameStatus = GameStatus.WAITING_FOR_PLAYERS;
         this.idToDistribute = 1; // usato per distribuire l'id, serve nella fase di creazione del gioco
@@ -37,7 +37,7 @@ export class Game {
     distributeId(): string | Error {
         // WARNING: non spostare questo pezzo, si rompe la if per cambiare stato sotto.
         if (this.gameStatus !== GameStatus.WAITING_FOR_PLAYERS) {
-            return new Error('game already started, can\'t request more IDS');
+            return new Error('can\'t request more IDS');
         }
         
         let id: string; 
@@ -61,14 +61,15 @@ export class Game {
 
     // TODO(ang): non so se ritornare la stringa ha senso, ma per ora lo faccio
     // pensavo come log di quello che sta facendo...
-    attack(playerId: string, position: Position): string | Error {
+    attack(playerId: string, position: Position): void | Error {
+        if (this.gameStatus !== GameStatus.PLAYING) {
+            return new Error('wrong game status: you can\'t attack when the game is not being played');
+        }
+
         if (playerId !== this.getPlayerId()) {
             return new Error('wrong player');
         }
 
-        if (this.gameStatus !== GameStatus.PLAYING) {
-            return new Error('wrong game status: you can\'t attack when the game has not started');
-        }
         
         // TODO(ang): refactor this part, i don't want the board to be accessible in this way
         const currPlayer = this.turn === 1 ? this.player1 : this.player2;
@@ -87,30 +88,27 @@ export class Game {
             //Costruire la Board e modificare la board hit 
             this.nextTurn();
             
-            return "miss";
+            return;
         } else {
             currPlayer.hitBoard.setCellAt(position, CellType.HIT);
             otherPlayer.applyDamage(position);
             if (otherPlayer.hasLost()) {
                 this.gameStatus = GameStatus.FINISHED;
-                return "win";
+                return;
             }
         }
-
-        return "hit"; // TODO(team): cambia questo messaggio
     }
 
     placeShip(playerId: string, shipId: number, posSegment: Segment): void | Error {
+        if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
+            return new Error('wrong game status, can\'t place ship anymore');
+        }
+
         if (playerId !== this.player1.id && playerId !== this.player2.id) {
             return new Error('the player does not belong to this game or does not exist');
         }
 
-        // TODO(team): questi check per lo status del gioco non dovrebbero essere qui
-        // rendono il testing molto complicato, dato che non puoi prendere la logica delle singole funzioni da solo
-        // dovremmo mettere tutta la roba per le eccezzioni da un wrapper o da qualcosa di simile
-        if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
-            return new Error('wrong game status, can\'t place ship anymore');
-        }
+        
 
         const currPlayer = playerId === this.player1.id ? this.player1 : this.player2;
         const otherPlayer = playerId === this.player2.id ? this.player1 : this.player2;
@@ -118,7 +116,6 @@ export class Game {
 
         if (currPlayer.hasFinishedPlacingShips() && otherPlayer.hasFinishedPlacingShips()) {
             this.gameStatus = GameStatus.PLAYING;
-            console.log("playing now");
         }
 
         return err;

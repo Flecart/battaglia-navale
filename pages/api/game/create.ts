@@ -5,11 +5,6 @@ import { gameHandler } from '@game/GameHandler';
 
 export const GameHandler = new gameHandler(); // TODO(team): get from global variable
 
-const schema = yup.object().shape({
-    player1: yup.string().required(),
-    player2: yup.string().required(),
-}).required();
-
 type Data = {
     gameId?: string
     error?: string
@@ -26,15 +21,9 @@ export default async function handler(
         return
     }
 
-    const data = await schema.validate(req.body)
-    .catch((err: { message: string; }) => {
-        res.status(400).json({ error: err.message })
-        return;
-    });
-
     let gameId: string = "";
     try {
-        gameId = GameHandler.createGame(data.player1, data.player2);
+        gameId = GameHandler.createGame();
     } catch (error) {
         if (error instanceof Error) {
             res.status(500).json({ error: error.message });

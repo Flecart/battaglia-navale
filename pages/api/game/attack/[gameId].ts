@@ -64,5 +64,5 @@ export default async function handler(
         res.status(400).json({ error: result.message });
         return;
     }
-    res.status(200).json({ data: result})
+    res.status(200).json({ data: "ok"})
 }

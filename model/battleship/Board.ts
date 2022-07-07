@@ -2,34 +2,29 @@ import { CellType } from "@game/Enums";
 import { Position, Segment } from "@game/Structs";
 
 export class Board {
-    board: number[][];
     size: number;
+    private _board: number[][];
 
     constructor(size: number) {
         this.size = size; 
-        this.board = Array.from(Array(size), () => new Array(size));
+        this._board = Array.from(Array(size), () => new Array(size));
 
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
-                this.board[i][j] = CellType.UNKNOWN;
+                this._board[i][j] = CellType.UNKNOWN;
             }
         }
     }
 
+    // returns the value at position. 
+    // make sure the position is valid within the size!
     getCellAt(position: Position): number {
-        try {
-            return this.board[position.x][position.y];
-        } catch (error) {
-            throw new Error(`invalid position: ${position.x}, ${position.y} when accessing board of size ${this.size}`);
-        }
+        return this._board[position.x][position.y];
     }
 
+    // make sure the position is valid within the size!
     setCellAt(position: Position, value: number): void {
-        try {
-            this.board[position.x][position.y] = value;
-        } catch (error) {
-            throw new Error(`invalid position: ${position.x}, ${position.y} when accessing board of size ${this.size}`);
-        }
+        this._board[position.x][position.y] = value;
     }
 
     // set all unknown cells to sea value 
@@ -37,8 +32,8 @@ export class Board {
     setUnknownToSea(): void {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                if (this.board[i][j] === CellType.UNKNOWN) {
-                    this.board[i][j] = CellType.SEA;
+                if (this._board[i][j] === CellType.UNKNOWN) {
+                    this._board[i][j] = CellType.SEA;
                 }
             }
         }
@@ -55,12 +50,13 @@ export class Board {
             return new Error("ship is not parallel to the board axis");
         }
 
+        // this part sets the ship value to single cells, 
         let err: Error | null = null; 
         if (startPosition.x === endPosition.x) {
             const min = Math.min(startPosition.y, endPosition.y);
             const max = Math.max(startPosition.y, endPosition.y);
             for (let i = min; i <= max; i++) {
-                if (this.board[startPosition.x][i] !== CellType.UNKNOWN) {
+                if (this._board[startPosition.x][i] !== CellType.UNKNOWN) {
                     err = new Error("ship cannot be placed on top of another ship");
                     break;
                 }
@@ -70,7 +66,7 @@ export class Board {
             // reset the table if there is a error!
             if (err !== null) {
                 for (let i = min; i <= max; i++) {
-                    if (this.board[startPosition.x][i] === shipId) {
+                    if (this._board[startPosition.x][i] === shipId) {
                         this.setCellAt(new Position(startPosition.x, i), CellType.UNKNOWN);
                     }
                 }
@@ -79,7 +75,7 @@ export class Board {
             const min = Math.min(startPosition.x, endPosition.x);
             const max = Math.max(startPosition.x, endPosition.x);
             for (let i = min; i <= max; i++) {
-                if (this.board[i][startPosition.y] !== CellType.UNKNOWN) {
+                if (this._board[i][startPosition.y] !== CellType.UNKNOWN) {
                     err = new Error("ship cannot be placed on top of another ship");
                     break;
                 }
@@ -88,7 +84,7 @@ export class Board {
 
             if (err !== null) {
                 for (let i = min; i <= max; i++) {
-                    if (this.board[i][startPosition.y] === shipId) {
+                    if (this._board[i][startPosition.y] === shipId) {
                         this.setCellAt(new Position(i, startPosition.y), CellType.UNKNOWN);
                     }
                 }
@@ -97,7 +93,8 @@ export class Board {
         return err;
     }
 
-    private isValidPosition(position: Position): boolean {
+    // returns whether the position is valid within the board
+    isValidPosition(position: Position): boolean {
         return position.x >= 0 && position.x < this.size && position.y >= 0 && position.y < this.size;
     }
 }
