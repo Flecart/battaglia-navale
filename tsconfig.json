@@ -18,6 +18,7 @@
     "paths": {
         "@game/*": ["./model/battleship/*"],
         "@api/*": ["./pages/api/*"],
+        "@flux/*": ["./flux/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
