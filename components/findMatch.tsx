@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import { Button, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { access } from "fs";
 
 export class FindMatch extends Component {
 
@@ -18,29 +19,58 @@ export class FindMatch extends Component {
         }
     }
 
-    makeRequest = (param : string) => {
+    makeRequest = (createGame : boolean) => {
 
         //TODO: create the endpoint for the request
 
-        /*
-        const reqOptions = {
+        //Send the first request to be added to the waiting list
+        const reqWaitingListOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ 
+                name : document.getElementById("playerName").value ,
+                waitingList : true, //Riguada una richista che ha a che fare con la waiting list 
+                accessWaitingList : createGame // stabilisce se creare aggiungere o rimuovere dalla waiting list
+                
+            })
         };
 
-        const url = "http://localhost:3000/" + param;
+        const url = "/api/game/findGame";
         
-        fetch(url, reqOptions)
+        fetch(url, reqWaitingListOptions)
         .then(response => response.json())
         .then(data => {
             console.log(data);
+
+            if(createGame){
+                const id = data.id;
+                //Send the second request to the server to create a game
+                const reqCreateGameOptions = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id : id,
+                        name : document.getElementById("playerName").value ,
+                        waitingList : false, //Riguada una richista che ha a che fare con la waiting list
+                        accessWaitingList : createGame // stabilisce se creare aggiungere o rimuovere dalla waiting list
+                    })
+                };
+                
+                //TODO : finire di completare la risposta della seconda richista (collegamento per generazione partita)
+                fetch(url, reqCreateGameOptions).then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+            
+            }
+            
+
+
         }).catch(err => {
             console.log(err);
         });
-        */
+        
 
-        console.log(`http://localhost:3000/${param}`);
     }
 
 
@@ -48,7 +78,8 @@ export class FindMatch extends Component {
         
         if(this.selected){
             this.changeStatus();
-            this.makeRequest("cancelMatch");
+            this.makeRequest(false);
+            document.getElementById("playerName").disabled = false;
             return;
 
         }
@@ -58,7 +89,8 @@ export class FindMatch extends Component {
 
         if(name && !this.selected){
             this.changeStatus();
-            this.makeRequest("findMatch");
+            this.makeRequest(true);
+            document.getElementById("playerName").disabled = true;
         }
 
         
@@ -70,7 +102,6 @@ export class FindMatch extends Component {
             <div>
                 <TextField id="playerName" label="Player name" variant="outlined" required/>
 
-    
                 <ToggleButtonGroup>
                     <ToggleButton value="search" id = "search" onClick={this.send}>
                         Find match
