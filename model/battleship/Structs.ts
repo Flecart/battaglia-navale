@@ -18,7 +18,10 @@ export class Position {
             return new Position(Number(obj.x), Number(obj.y));
         } catch (e) {
             // ts-ignore: no e cant be of any type, its only error, because isvalid failed
-            return new Error(`Position is not well formed: ${e.message}`);
+            //return new Error(`Position is not well formed: ${e.message}`);
+            
+            //Modificato per non far crashare il programma
+            return new Error(`Position is not well formed: `);
         }
     }
 }
@@ -54,7 +57,10 @@ export class Segment {
             return new Segment(start, end);
         } catch (e) {
             // ts-ignore: no e cant be of any type, its only error, because isvalid failed
-            return new Error(`Segment is not well formed: ${e.message}`);
+            //return new Error(`Segment is not well formed: ${e.message}`);
+        
+            //Modificato per non far crashare il programma
+            return new Error(`Segment is not well formed: `);
         }
     }
 }

@@ -17,7 +17,7 @@ export default function handler(
   let user = new User("0","username");
   let message = new Message(user,"Salve a tutti");
   
-  //res.status(200).json({ name: user });
-  res.send(message);
+  res.status(200).json({ name: user });
+
 
 }
