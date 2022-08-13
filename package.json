@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "eslint --ext .tsx --ext .ts ./"
+    "format": "eslint --ext .tsx --ext .ts --fix ./"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",

@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
-import { Ship } from "@game/Ship";
-import { Board } from "@game/Board";
-import { Fleet } from '@game/Fleet';
+import {Ship} from '@game/Ship';
+import {Board} from '@game/Board';
+import {Fleet} from '@game/Fleet';
 import {kCellOffset, ShipNumbers} from '@game/Enums';
-import { Segment, Position } from '@game/Structs';
+import {Segment, Position} from '@game/Structs';
 export class Player {
     id: string;
     fleet: Fleet; // raggiude le fleet da piazzare
@@ -15,12 +15,12 @@ export class Player {
         this.id = uuidv4();
         this.ownBoard = new Board(boardSize);
         this.hitBoard = new Board(boardSize);
-        this.fleet = new Fleet(this.getInitialFleet()); 
+        this.fleet = new Fleet(this.getInitialFleet());
     }
 
     hasLost(): boolean {
         return this.fleet.isFleetEmpty();
-    } 
+    }
 
     hasFinishedPlacingShips(): boolean {
         return this.fleet.isFleetPlaced();
@@ -34,23 +34,23 @@ export class Player {
 
     placeShip(shipId: number, posSegment: Segment): void | Error {
         if (this.fleet.isFleetPlaced()) {
-            return new Error("fleet already placed, cannot place more ships");
+            return new Error('fleet already placed, cannot place more ships');
         }
         const currShip = this.fleet.getShipById(shipId);
         if (currShip === null) {
-            return new Error("ship not found when trying to place ship");
+            return new Error('ship not found when trying to place ship');
         }
 
         // -1 perché se i punti sono ad es. (0, 0), (0, 2), viene 2, ma prende 3 blocchi
         if (posSegment.length() + 1 !== currShip.length) {
-            return new Error("ship length does not match when trying to place it");
+            return new Error('ship length does not match when trying to place it');
         }
 
         const err = this.ownBoard.placeShip(shipId, posSegment);
         if (err !== null) {
             return err;
         }
-        
+
         this.fleet.placeShip(shipId);
 
         if (this.fleet.isFleetPlaced()) {
@@ -62,7 +62,7 @@ export class Player {
     reset() {
         this.ownBoard = new Board(this.ownBoard.size);
         this.hitBoard = new Board(this.hitBoard.size);
-        this.fleet = new Fleet(this.getInitialFleet()); 
+        this.fleet = new Fleet(this.getInitialFleet());
     }
 
     private getInitialFleet(): Ship[] {

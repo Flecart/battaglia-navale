@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type {NextApiRequest, NextApiResponse} from 'next';
 
-import { GameHandler } from "@api/game/create"
-import { Game } from "@game/Game"
+import {GameHandler} from '@api/game/create';
+import {Game} from '@game/Game';
 
 type Data = {
     data?: string,
@@ -10,36 +10,36 @@ type Data = {
 
 export default function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Data>
+    res: NextApiResponse<Data>,
 ) {
     // validate request method ONLY POST
     if (req.method !== 'POST') {
-        res.status(405).send({ error: 'Only POST requests allowed' })
-        return
+        res.status(405).send({error: 'Only POST requests allowed'});
+        return;
     }
 
-    // validate gameId query 
+    // validate gameId query
     if (req.query.gameId === undefined) {
-        res.status(400).json({ error: "gameId is not defined" })
-        return
+        res.status(400).json({error: 'gameId is not defined'});
+        return;
     } else if (Array.isArray(req.query.gameId)) {
-        res.status(400).json({ error: "gameId is an array, should be single string" })
+        res.status(400).json({error: 'gameId is an array, should be single string'});
         return;
     }
 
     // validate game-id string
     const currentGame = GameHandler.findGame(req.query.gameId);
     if (currentGame instanceof Error) {
-        res.status(400).json({ error: `game with id ${req.query.gameId} wasn't found` });
+        res.status(400).json({error: `game with id ${req.query.gameId} wasn't found`});
         return;
     }
 
     // validate id request
-    const currentId = currentGame.distributeId();;
+    const currentId = currentGame.distributeId(); ;
     if (currentId instanceof Error) {
-        res.status(400).json({ error: currentId.message });
+        res.status(400).json({error: currentId.message});
         return;
     }
 
-    res.status(200).json({data: currentId})
+    res.status(200).json({data: currentId});
 }

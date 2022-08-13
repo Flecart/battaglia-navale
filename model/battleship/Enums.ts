@@ -5,7 +5,7 @@ export enum CellType{
 }
 
 // indica a che numero inizia il valore libero per la cella
-export const kCellOffset = 3; 
+export const kCellOffset = 3;
 
 // WAITING_FOR_PLAYERS indica che il giocatore è in attesa di altri giocatori
 // SETTING_SHIP indica che si è nella fase di settaggio delle navi
@@ -32,4 +32,4 @@ export const ShipNumbers = {
     // [ShipType.FRIGATES]: 3,
     // [ShipType.CRUISER]: 2,
     // [ShipType.AIRCRAFT]: 1,
-}
+};
