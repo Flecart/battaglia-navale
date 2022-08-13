@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "eslint --ext .tsx --ext .ts ./"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -26,8 +27,12 @@
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.6",
     "@types/uuid": "^8.3.4",
-    "eslint": "8.19.0",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0",
+    "eslint-config-google": "^0.14.0",
     "eslint-config-next": "12.2.0",
+    "eslint-plugin-react": "^7.30.1",
     "typesafe-actions": "^5.1.0",
     "typescript": "4.7.4"
   }
