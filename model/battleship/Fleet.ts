@@ -1,9 +1,9 @@
-import { Ship } from "@game/Ship";
+import {Ship} from '@game/Ship';
 export class Fleet {
     ships: Ship[];
-    // corrisponde all'index corrispondente in ships, sa se 
-    // la nave è stata piazzata o meno 
-    placed: boolean[]; 
+    // corrisponde all'index corrispondente in ships, sa se
+    // la nave è stata piazzata o meno
+    placed: boolean[];
     nShipsPlaced: number;
     nShipsSunk: number;
 
@@ -15,7 +15,7 @@ export class Fleet {
     }
 
     getShipById(shipId: number): Ship | null {
-        let index = this.getShipIndex(shipId);
+        const index = this.getShipIndex(shipId);
         if (index === -1) {
             return null;
         }
@@ -27,7 +27,7 @@ export class Fleet {
     }
 
     placeShip(shipId: number) {
-        let index = this.getShipIndex(shipId);
+        const index = this.getShipIndex(shipId);
         if (index >= this.ships.length) {
             // TODO(team): è meglio ritornare così o lanciare un errore?
             return;
@@ -38,7 +38,7 @@ export class Fleet {
     }
 
     isShipPlaced(shipId: number): boolean {
-        let index = this.getShipIndex(shipId);
+        const index = this.getShipIndex(shipId);
         if (index >= this.ships.length) {
             return false;
         } else {
@@ -47,7 +47,7 @@ export class Fleet {
     }
 
     applyDamage(shipId: number) {
-        let index = this.getShipIndex(shipId);
+        const index = this.getShipIndex(shipId);
         if (index === -1) {
             return;
         }
@@ -59,7 +59,7 @@ export class Fleet {
     }
 
     removeShip(shipId: number) {
-        this.ships = this.ships.filter(s => s.id !== shipId);
+        this.ships = this.ships.filter((s) => s.id !== shipId);
     }
 
     // checks if all ships sank down
@@ -67,11 +67,11 @@ export class Fleet {
         return this.ships.length === this.nShipsSunk;
     }
 
-    isFleetPlaced(): boolean { 
+    isFleetPlaced(): boolean {
         return this.nShipsPlaced === this.ships.length;
     }
 
     private getShipIndex(shipId: number): number {
-        return this.ships.findIndex(ship => ship.id === shipId);
+        return this.ships.findIndex((ship) => ship.id === shipId);
     }
 }

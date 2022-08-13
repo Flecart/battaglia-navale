@@ -1,4 +1,4 @@
-// reprehesents a position in the model 
+// reprehesents a position in the model
 export class Position {
     x: number;
     y: number;
@@ -33,12 +33,11 @@ export class Segment {
         this.end = end;
     }
 
-    length(): number { 
+    length(): number {
         return this.start.distanceFrom(this.end);
     }
 
     static fromObject(obj: any): Segment | Error {
-        
         const start = Position.fromObject(obj.start);
         const end = Position.fromObject(obj.end);
         return this.fromObjects(start, end);

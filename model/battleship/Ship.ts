@@ -1,4 +1,4 @@
-import { ShipType } from "@game/Enums";
+import {ShipType} from '@game/Enums';
 class Ship {
     type: ShipType;
     health: number;
@@ -8,8 +8,8 @@ class Ship {
     constructor(type: ShipType, id: number) {
         this.type = type;
         this.health = Number(type);
-        this.length = this.health; 
-        this.id = id; 
+        this.length = this.health;
+        this.id = id;
     }
 
     getType(): ShipType {
@@ -21,8 +21,8 @@ class Ship {
     }
 
     reduceHealth(): void {
-        this.health -= 1; 
+        this.health -= 1;
     }
 }
 
-export {Ship}
+export {Ship};
