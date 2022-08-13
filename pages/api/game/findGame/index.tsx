@@ -48,17 +48,15 @@ export default function handler(
             //TODO : finire di rimuovere la richista dalla lista
             const index = reqList.findIndex(x => x.id === req.body.id);
             
+            console.log('User index : ' + index);
             if(index !== -1){
                 reqList.splice(index, 1);
             }
 
-
-            console.log(reqList);
-
+            
             res.status(200).json({
                 message: "Request removed successfully",
                 status : true,
-                data : req.body
             });
         }
 
