@@ -9,10 +9,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import { useSelector } from 'react-redux';
-import {useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {useCallback, useState } from 'react';
 import * as gameSelectors from '@flux/selectors/game';
+import * as gameActions from '@flux/actions/game';
+import { CellType } from '@game/Enums';
 
 
 const CustomTableCell = styled(TableCell)<{ hoverable?: boolean }>`
@@ -26,8 +29,7 @@ const CustomTableCell = styled(TableCell)<{ hoverable?: boolean }>`
 `;
 
 function Game() {
-    const playerId = useSelector(gameSelectors.getPlayerId);
-    const gameId = useSelector(gameSelectors.getGameId);
+    const dispatch = useDispatch();
     const ownBoard = useSelector(gameSelectors.getOwnboard);
     const enemyBoard = useSelector(gameSelectors.getEnemyboard);
 
@@ -35,11 +37,28 @@ function Game() {
 
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-    const handleClick = (row: number, column: number) => {
-        // TODO(handle backend call)
-        console.log(`CLICKED -> row: ${row}, column: ${column}`);
-        console.log(ownBoard);
-    }
+    const handleClick = useCallback((row: number, column: number) => {
+        // TODO(ang): fare la richiesta fetch col dispatch
+        // Quanto sotto è temporaneo per testare il click 
+        if (showOwnBoard) {
+            dispatch(gameActions.setOwnBoardCell({x: row, y: column, cellType: CellType.HIT}));
+        } else {
+            dispatch(gameActions.setEnemyBoardCell({x: row, y: column, cellType: CellType.HIT}));
+        }
+    }, [dispatch, showOwnBoard]);
+
+    const renderCell = useCallback((row: number, column: number) => {
+        const cell = showOwnBoard ? ownBoard[row][column] : enemyBoard[row][column];
+
+        switch (cell) {
+            case CellType.UNKNOWN:
+                return <CustomTableCell align="center" hoverable onClick={() => handleClick(row, column)}>☁️</CustomTableCell>;
+            case CellType.SEA:
+                return <CustomTableCell align="center">🌊</CustomTableCell>;
+            case CellType.HIT:
+                return <CustomTableCell align="center">🔥</CustomTableCell>;
+        }
+    }, [ownBoard, enemyBoard, showOwnBoard]);
 
     return (
         <Container maxWidth='md'>
@@ -64,18 +83,15 @@ function Game() {
                             <CustomTableCell component="th" scope="row">
                                 {row}
                             </CustomTableCell>
-                            {rows.map(column => (
-                                    <CustomTableCell 
-                                        align="center" 
-                                        hoverable
-                                        onClick={() => handleClick(row, column)}
-                                    />
-                            ))}
+                            {rows.map(column => (renderCell(row, column)))}
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Button variant="contained" sx={{mt: '1rem'}} onClick={() => setShowOwnBoard(!showOwnBoard)}> 
+                To {showOwnBoard ? 'Enemy Board' : 'Own Board'}
+            </Button>
         </Container>
     );
 }

@@ -3,6 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 import {applyMiddleware, createStore} from 'redux';
 import rootReducer from '@flux/reducers';
 import { CellType } from '@game/Enums';
+import rootSaga from '@flux/saga';
 export interface GameStore {
     playerId: string;
     gameId: string;
@@ -17,4 +18,5 @@ export const Store = createStore(
     applyMiddleware(sagaMiddleware),
 );
 
+sagaMiddleware.run(rootSaga);
 export type IStore = ReturnType<typeof rootReducer>;

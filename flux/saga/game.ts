@@ -1,28 +1,19 @@
 import * as gameActions from '@flux/actions/game';
-import * as gameSelectors from '@flux/selectors/game';
-import {put, takeEvery, select} from 'redux-saga/effects';
-import {ActionType, getType} from 'typesafe-actions';
-import {CellType} from '@game/Enums';
+import {takeEvery} from 'redux-saga/effects';
 
-function* setOwnBoardCell(action: ActionType<typeof gameActions.setOwnBoardCell>) {
-    const newOwnBoard: Array<Array<CellType>> = yield select(gameSelectors.getOwnboard);
-    const {x, y, cellType} = action.payload;
-    newOwnBoard[x][y] = cellType;
 
-    yield put(gameActions.setOwnBoard({ownBoard: newOwnBoard}));
+// temporaneo, solamente per vedere se il saga viene chiamato al click
+function* provaOwnClick() {
+    console.log('saga clicked own board');
 }
 
-function* setEnemyBoardCell(action: ActionType<typeof gameActions.setEnemyBoardCell>) {
-    const newEnemyBoard: Array<Array<CellType>> = yield select(gameSelectors.getEnemyboard);
-    const {x, y, cellType} = action.payload;
-    newEnemyBoard[x][y] = cellType;
-
-    yield put(gameActions.setEnemyBoard({enemyBoard: newEnemyBoard}));
+function* provaEnemyClick() {
+    console.log('saga clicked enemy board');
 }
 
 const gameSagas = [
-    takeEvery(getType(gameActions.setOwnBoardCell), setOwnBoardCell),
-    takeEvery(getType(gameActions.setEnemyBoardCell), setEnemyBoardCell),
+    takeEvery(gameActions.setOwnBoardCell, provaOwnClick),
+    takeEvery(gameActions.setEnemyBoardCell, provaEnemyClick)
 ]
 
 export default gameSagas;

@@ -1,10 +1,10 @@
-import * as game_actions from '@flux/actions/game';
+import * as gameActions from '@flux/actions/game';
 import { GameStore } from '@flux/store';
 import {ActionType, getType} from 'typesafe-actions'; 
 import { GameStatus } from '@game/Enums';
 import { CellType } from '@game/Enums';
 
-export type GameAction = ActionType<typeof game_actions>;
+export type GameAction = ActionType<typeof gameActions>;
 
 const kBoardGameSize = 10;
 
@@ -18,16 +18,34 @@ const defaultState: GameStore = {
 
 const gameReducer = (state = defaultState, action: GameAction) => {
     switch (action.type) {
-        case getType(game_actions.setGameId):
+        case getType(gameActions.setGameId):
             return {...state, id: action.payload.gameId};
-        case getType(game_actions.setPlayerId):
+        case getType(gameActions.setPlayerId):
             return {...state, playerId: action.payload.playerId};
-        case getType(game_actions.setStatus):
+        case getType(gameActions.setStatus):
             return {...state, status: action.payload.status};
-        case getType(game_actions.setOwnBoard):
+        case getType(gameActions.setOwnBoard):
             return {...state, ownBoard: action.payload.ownBoard};
-        case getType(game_actions.setEnemyBoard):
+        case getType(gameActions.setEnemyBoard):
             return {...state, enemyBoard: action.payload.enemyBoard};
+        case getType(gameActions.setOwnBoardCell):
+            return {...state, ownBoard: state.ownBoard.map((row, x) => {
+                return row.map((cell, y) => {
+                    if (x === action.payload.x && y === action.payload.y) {
+                        return action.payload.cellType;
+                    }
+                    return cell;
+                });
+            })};
+        case getType(gameActions.setEnemyBoardCell):
+            return {...state, enemyBoard: state.enemyBoard.map((row, x) => {
+                return row.map((cell, y) => {
+                    if (x === action.payload.x && y === action.payload.y) {
+                        return action.payload.cellType;
+                    }
+                    return cell;
+                });
+            })};
         default:
             return state;
     }
