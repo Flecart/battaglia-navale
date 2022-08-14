@@ -22,6 +22,8 @@ module.exports = {
     'rules': {
         'indent': ['error', 4],
         'require-jsdoc': ['off'],
-        'max-len': ['off']
+        'max-len': ['off'],
+        'linebreak-style': 'off',
+        'react/react-in-jsx-scope': 'off',
     },
 };
