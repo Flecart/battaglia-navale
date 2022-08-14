@@ -3,6 +3,6 @@ import gameSaga from '@flux/saga/game';
 
 export default function* rootSaga() {
     yield all([
-        ...gameSaga
+        ...gameSaga,
     ]);
 }

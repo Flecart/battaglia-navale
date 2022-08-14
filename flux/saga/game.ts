@@ -13,7 +13,7 @@ function* provaEnemyClick() {
 
 const gameSagas = [
     takeEvery(gameActions.setOwnBoardCell, provaOwnClick),
-    takeEvery(gameActions.setEnemyBoardCell, provaEnemyClick)
-]
+    takeEvery(gameActions.setEnemyBoardCell, provaEnemyClick),
+];
 
 export default gameSagas;

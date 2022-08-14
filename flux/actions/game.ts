@@ -1,6 +1,6 @@
-import {createAction} from 'typesafe-actions'; 
-import { GameStatus } from '@game/Enums';
-import { CellType } from '@game/Enums';
+import {createAction} from 'typesafe-actions';
+import {GameStatus} from '@game/Enums';
+import {CellType} from '@game/Enums';
 
 export const setGameId = createAction('game/set_game_id')<{gameId: string}>();
 export const setPlayerId = createAction('game/set_player_id')<{playerId: string}>();
