@@ -1,0 +1,38 @@
+import { CellType } from "@game/Enums"
+
+interface Error {
+    error?: {
+        message: string
+        code: number
+    }
+}
+
+export interface GameCreated extends Error {
+    data?: {
+        gameId: string
+    }
+}
+
+export interface Restart extends Error {
+    data?: {
+        message: string
+    }
+}
+
+export interface Attack extends Error {
+    data?: {
+        cellType: CellType
+    }
+}
+
+export interface PlaceShip extends Error {
+    data?: {
+        message: string
+    }
+}
+
+export interface RequestId extends Error {
+    data?: {
+        playerId: string
+    }
+}

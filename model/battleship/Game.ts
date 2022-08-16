@@ -34,10 +34,10 @@ export class Game {
     // deve bastare come una forma di autenticazione per il gioco, quindi invece di UUID
     // si potrebbe generare qualcosa come cookie, token, ecc e settarlo al giocatore, e anche qui
     // così si fa check su quello
-    distributeId(): string | Error {
+    distributeId(): string {
         // WARNING: non spostare questo pezzo, si rompe la if per cambiare stato sotto.
         if (this.gameStatus !== GameStatus.WAITING_FOR_PLAYERS) {
-            return new Error('can\'t request more IDS');
+            throw new Error('can\'t request more IDS');
         }
 
         let id: string;
@@ -46,7 +46,7 @@ export class Game {
         } else if (this.idToDistribute === 2) {
             id = this.player2.id;
         } else {
-            return new Error('invalid id, can\'t request more IDS');
+            throw new Error('invalid id, can\'t request more IDS');
         }
         this.idToDistribute++;
 
@@ -61,13 +61,13 @@ export class Game {
 
     // TODO(ang): non so se ritornare la stringa ha senso, ma per ora lo faccio
     // pensavo come log di quello che sta facendo...
-    attack(playerId: string, position: Position): void | Error {
+    attack(playerId: string, position: Position): CellType {
         if (this.gameStatus !== GameStatus.PLAYING) {
-            return new Error('wrong game status: you can\'t attack when the game is not being played');
+            throw new Error('wrong game status: you can\'t attack when the game is not being played');
         }
 
         if (playerId !== this.getPlayerId()) {
-            return new Error('wrong player');
+            throw new Error('wrong player');
         }
 
 
@@ -78,7 +78,7 @@ export class Game {
         const otherCellValue = otherPlayer.ownBoard.getCellAt(position);
 
         if (ownCellHitValue !== CellType.UNKNOWN) {
-            return new Error('cell already attacked');
+            throw new Error('cell already attacked');
         }
 
         // DA RICORDARE: la cella avversaria può essere solo NAVE o MARE
@@ -88,41 +88,39 @@ export class Game {
             // Costruire la Board e modificare la board hit
             this.nextTurn();
 
-            return;
+            return CellType.SEA;
         } else {
             currPlayer.hitBoard.setCellAt(position, CellType.HIT);
             otherPlayer.applyDamage(position);
             if (otherPlayer.hasLost()) {
                 this.gameStatus = GameStatus.FINISHED;
-                return;
             }
+            return CellType.HIT;
         }
     }
 
-    placeShip(playerId: string, shipId: number, posSegment: Segment): void | Error {
+    placeShip(playerId: string, shipId: number, posSegment: Segment): void {
         if (this.gameStatus !== GameStatus.SETTING_SHIPS) {
-            return new Error('wrong game status, can\'t place ship anymore');
+            throw new Error('wrong game status, can\'t place ship anymore');
         }
 
         if (playerId !== this.player1.id && playerId !== this.player2.id) {
-            return new Error('the player does not belong to this game or does not exist');
+            throw new Error('the player does not belong to this game or does not exist');
         }
 
 
         const currPlayer = playerId === this.player1.id ? this.player1 : this.player2;
         const otherPlayer = playerId === this.player2.id ? this.player1 : this.player2;
-        const err = currPlayer.placeShip(shipId, posSegment);
+        currPlayer.placeShip(shipId, posSegment);
 
         if (currPlayer.hasFinishedPlacingShips() && otherPlayer.hasFinishedPlacingShips()) {
             this.gameStatus = GameStatus.PLAYING;
         }
-
-        return err;
     }
 
-    restart(forceRestart: boolean): void | Error {
+    restart(forceRestart: boolean): void {
         if (forceRestart !== true && this.gameStatus !== GameStatus.FINISHED) {
-            return new Error('game has not ended, can\'t restart');
+            throw new Error('game has not ended, can\'t restart');
         }
         this.player1.reset();
         this.player2.reset();

@@ -2,10 +2,14 @@ from email.quoprimime import body_check
 import requests
 
 gameId = requests.post('http://localhost:3000/api/game/create', json = {
-}).json()['gameId']
+}).json()['data']['gameId']
 
-userId1 = requests.post('http://localhost:3000/api/game/get-id/' + gameId).json()['data']
-userId2 = requests.post('http://localhost:3000/api/game/get-id/' + gameId).json()['data']
+userId1 = requests.post('http://localhost:3000/api/game/request-id/', json = {
+    "gameId": gameId
+}).json()['data']['playerId']
+userId2 = requests.post('http://localhost:3000/api/game/request-id/', json = {
+    "gameId": gameId
+}).json()['data']['playerId']
 
 # fleet schema 
 # player: string 
@@ -21,8 +25,9 @@ userId2 = requests.post('http://localhost:3000/api/game/get-id/' + gameId).json(
 #     }
 # }
 
-response = requests.post('http://localhost:3000/api/game/place-ship/' + gameId, json = {
-    "player": userId1,
+response = requests.post('http://localhost:3000/api/game/place-ship/', json = {
+    "gameId": gameId,
+    "playerId": userId1,
     "fleet": [
         {
             "shipId": 4,
@@ -51,8 +56,9 @@ response = requests.post('http://localhost:3000/api/game/place-ship/' + gameId, 
 print(response)
 
 
-response = requests.post('http://localhost:3000/api/game/place-ship/' + gameId, json = {
-    "player": userId2,
+response = requests.post('http://localhost:3000/api/game/place-ship/', json = {
+    "gameId": gameId,
+    "playerId": userId2,
     "fleet": [
         {
             "shipId": 3,
@@ -80,8 +86,9 @@ response = requests.post('http://localhost:3000/api/game/place-ship/' + gameId, 
 }).json()
 print(response)
 
-response = requests.post('http://localhost:3000/api/game/place-ship/' + gameId, json = {
-    "player": userId2,
+response = requests.post('http://localhost:3000/api/game/place-ship/', json = {
+    "gameId": gameId,
+    "playerId": userId2,
     "fleet": [
         {
             "shipId": 4,
@@ -101,8 +108,9 @@ print(response)
 def attack(userId, x, yval):
     global gameId
     print(yval)
-    response = requests.post('http://localhost:3000/api/game/attack/' + gameId, json = {
-        "player": userId,
+    response = requests.post('http://localhost:3000/api/game/attack/', json = {
+        "gameId": gameId,
+        "playerId": userId,
         "position": {
             "x": x,
             "y": yval
@@ -113,8 +121,9 @@ def attack(userId, x, yval):
 
 for i in range(1, 5):
     attack(userId1, 0, i)
-response = requests.post('http://localhost:3000/api/game/attack/' + gameId, json = {
-    'player': userId2,
+response = requests.post('http://localhost:3000/api/game/attack/', json = {
+    "gameId": gameId,
+    'playerId': userId2,
     'position': {
         "x": 0,
         "y": 1
@@ -122,8 +131,9 @@ response = requests.post('http://localhost:3000/api/game/attack/' + gameId, json
 }).json()
 print(response)
 
-response = requests.post('http://localhost:3000/api/game/attack/' + gameId, json = {
-    'player': userId2,
+response = requests.post('http://localhost:3000/api/game/attack/', json = {
+    "gameId": gameId,
+    'playerId': userId2,
     'position': {
         "x": 0,
         "y": 1

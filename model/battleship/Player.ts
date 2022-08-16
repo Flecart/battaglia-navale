@@ -32,23 +32,23 @@ export class Player {
         this.fleet.applyDamage(shipId);
     }
 
-    placeShip(shipId: number, posSegment: Segment): void | Error {
+    placeShip(shipId: number, posSegment: Segment): void {
         if (this.fleet.isFleetPlaced()) {
-            return new Error('fleet already placed, cannot place more ships');
+            throw new Error('fleet already placed, cannot place more ships');
         }
         const currShip = this.fleet.getShipById(shipId);
         if (currShip === null) {
-            return new Error('ship not found when trying to place ship');
+            throw new Error('ship not found when trying to place ship');
         }
 
         // -1 perché se i punti sono ad es. (0, 0), (0, 2), viene 2, ma prende 3 blocchi
         if (posSegment.length() + 1 !== currShip.length) {
-            return new Error('ship length does not match when trying to place it');
+            throw new Error('ship length does not match when trying to place it');
         }
 
         const err = this.ownBoard.placeShip(shipId, posSegment);
         if (err !== null) {
-            return err;
+            throw err;
         }
 
         this.fleet.placeShip(shipId);
