@@ -1,0 +1,7 @@
+
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "strictPropertyInitialization": false, // remove the require to initialize the class inputs
+    }
+}

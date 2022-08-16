@@ -1,13 +1,11 @@
 import {Game} from '@game/Game';
-import {Position, Segment} from '@game/Structs';
 
 // TODO(team): rimuovere questi commenti dopo
 // Vantaggi di questa soluzione
 // 1. Avere tutto in un singolo posto
 
-export class gameHandler {
+class gameHandler {
     games: Map<string, Game>;
-
 
     constructor() {
         this.games = new Map<string, Game>();
@@ -22,10 +20,10 @@ export class gameHandler {
         return game.id;
     }
 
-    findGame(gameId: string): Game | Error {
+    findGame(gameId: string): Game {
         const game = this.games.get(gameId);
         if (game === undefined) {
-            return new Error('game not found');
+            throw new Error('game not found');
         }
         return game;
     }
@@ -34,3 +32,6 @@ export class gameHandler {
         return this.games.delete(gameId); // true if delete is successfull, false otherwise
     }
 }
+
+const GameHandler = new gameHandler();
+export default GameHandler;
