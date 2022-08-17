@@ -1,10 +1,10 @@
 import {v4 as uuidv4} from 'uuid';
 
-import {Ship} from '@game/Ship';
-import {Board} from '@game/Board';
-import {Fleet} from '@game/Fleet';
-import {kCellOffset, ShipNumbers} from '@game/Enums';
-import {Segment, Position} from '@game/Structs';
+import {Ship} from '@game/ship';
+import {Board} from '@game/board';
+import {Fleet} from '@game/fleet';
+import {kCellOffset, ShipNumbers} from '@game/enums';
+import {Segment, Position} from '@game/structs';
 export class Player {
     id: string;
     fleet: Fleet; // raggiude le fleet da piazzare

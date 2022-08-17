@@ -1,8 +1,8 @@
 import * as gameActions from '@flux/actions/game';
 import {GameStore} from '@flux/store';
 import {ActionType, getType} from 'typesafe-actions';
-import {GameStatus} from '@game/Enums';
-import {CellType} from '@game/Enums';
+import {GameStatus} from '@game/enums';
+import {CellType} from '@game/enums';
 
 export type GameAction = ActionType<typeof gameActions>;
 

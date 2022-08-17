@@ -1,5 +1,5 @@
-import {CellType} from '@game/Enums';
-import {Position, Segment} from '@game/Structs';
+import {CellType} from '@game/enums';
+import {Position, Segment} from '@game/structs';
 
 export class Board {
     size: number;

@@ -1,10 +1,6 @@
-import {Game} from '@game/Game';
+import {Game} from '@game/game';
 
-// TODO(team): rimuovere questi commenti dopo
-// Vantaggi di questa soluzione
-// 1. Avere tutto in un singolo posto
-
-class gameHandler {
+class GameHandler {
     games: Map<string, Game>;
 
     constructor() {
@@ -33,5 +29,5 @@ class gameHandler {
     }
 }
 
-const GameHandler = new gameHandler();
-export default GameHandler;
+const game = new GameHandler();
+export default game;

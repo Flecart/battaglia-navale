@@ -7,9 +7,9 @@ import {
     ValidateNested,
     IsNotEmpty,
     IsArray,
-    ArrayMinSize
+    ArrayMinSize,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import {Type} from 'class-transformer';
 
 class Position {
     @IsInt()
@@ -64,7 +64,7 @@ export class PlaceShip {
     playerId: string;
 
     @IsArray()
-    @ValidateNested({ each: true })
+    @ValidateNested({each: true})
     @ArrayMinSize(1)
     @Type(() => Ship)
     fleet: Ship[];

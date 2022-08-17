@@ -1,8 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
 
-import {Player} from '@game/Player';
-import {Position, Segment} from '@game/Structs';
-import {CellType, GameStatus} from '@game/Enums';
+import {Player} from '@game/player';
+import {Position, Segment} from '@game/structs';
+import {CellType, GameStatus} from '@game/enums';
 export class Game {
     id: string;
     player1: Player;

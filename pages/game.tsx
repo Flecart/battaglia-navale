@@ -15,7 +15,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useCallback, useState} from 'react';
 import * as gameSelectors from '@flux/selectors/game';
 import * as gameActions from '@flux/actions/game';
-import {CellType} from '@game/Enums';
+import {CellType} from '@game/enums';
 
 
 const CustomTableCell = styled(TableCell)<{ hoverable?: boolean }>`

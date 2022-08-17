@@ -1,4 +1,4 @@
-import { CellType } from "@game/Enums"
+import {CellType} from '@game/enums';
 
 interface Error {
     error?: {

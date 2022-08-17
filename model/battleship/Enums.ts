@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export enum CellType{
     UNKNOWN = 0,
     SEA = 1,

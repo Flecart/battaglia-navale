@@ -1,4 +1,4 @@
-import {Ship} from '@game/Ship';
+import {Ship} from '@game/ship';
 export class Fleet {
     ships: Ship[];
     // corrisponde all'index corrispondente in ships, sa se
