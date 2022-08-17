@@ -21,6 +21,8 @@
         "@game/*": ["./model/battleship/*"],
         "@api/*": ["./pages/api/*"],
         "@flux/*": ["./flux/*"],
+        "@icons/*": ["./public/icons/*"],
+        "@components/*": ["./components/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

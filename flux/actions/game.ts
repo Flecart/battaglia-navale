@@ -9,3 +9,7 @@ export const setOwnBoard = createAction('game/set_own_board')<{ownBoard: Array<A
 export const setEnemyBoard = createAction('game/set_enemy_board')<{enemyBoard: Array<Array<CellType>>}>();
 export const setOwnBoardCell = createAction('game/set_own_board_cell')<{x: number, y: number, cellType: CellType}>();
 export const setEnemyBoardCell = createAction('game/set_enemy_board_cell')<{x: number, y: number, cellType: CellType}>();
+
+export const createGame = createAction('game/create_game')<void>();
+export const requestId = createAction('game/request_id')<{gameId: string}>();
+export const createGameAndRequestId = createAction('game/create_game_and_request_id')<void>();

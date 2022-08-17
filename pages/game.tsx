@@ -16,7 +16,7 @@ import {useCallback, useState} from 'react';
 import * as gameSelectors from '@flux/selectors/game';
 import * as gameActions from '@flux/actions/game';
 import {CellType} from '@game/enums';
-
+import Head from 'next/head';
 
 const CustomTableCell = styled(TableCell)<{ hoverable?: boolean }>`
     border: 1px solid rgba(224, 224, 224, 1);
@@ -61,38 +61,44 @@ function Game() {
     }, [ownBoard, enemyBoard, showOwnBoard]);
 
     return (
-        <Container maxWidth='md'>
-            <Box py={2}>
-                <Typography variant="h3" component="h1">
-                    {showOwnBoard ? 'Your Board' : 'Enemy Board'}
-                </Typography>
-            </Box>
-            <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <CustomTableCell/>
-                            {rows.map((rowId) => (
-                                <CustomTableCell align="center">{rowId}</CustomTableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row}>
-                                <CustomTableCell component="th" scope="row">
-                                    {row}
-                                </CustomTableCell>
-                                {rows.map((column) => (renderCell(row, column)))}
+        <>
+            <Head>
+                <title>Battaglia navale</title>
+                <meta name="description" content="Gioca a battaglia navale" />
+            </Head>
+            <Container maxWidth='md'>
+                <Box py={2}>
+                    <Typography variant="h3" component="h1">
+                        {showOwnBoard ? 'Your Board' : 'Enemy Board'}
+                    </Typography>
+                </Box>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <CustomTableCell/>
+                                {rows.map((rowId) => (
+                                    <CustomTableCell align="center">{rowId}</CustomTableCell>
+                                ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Button variant="contained" sx={{mt: '1rem'}} onClick={() => setShowOwnBoard(!showOwnBoard)}>
-                To {showOwnBoard ? 'Enemy Board' : 'Own Board'}
-            </Button>
-        </Container>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <TableRow key={row}>
+                                    <CustomTableCell component="th" scope="row">
+                                        {row}
+                                    </CustomTableCell>
+                                    {rows.map((column) => (renderCell(row, column)))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button variant="contained" sx={{mt: '1rem'}} onClick={() => setShowOwnBoard(!showOwnBoard)}>
+                    To {showOwnBoard ? 'Enemy Board' : 'Own Board'}
+                </Button>
+            </Container>
+        </>
     );
 }
 

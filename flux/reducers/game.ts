@@ -19,7 +19,7 @@ const defaultState: GameStore = {
 const gameReducer = (state = defaultState, action: GameAction) => {
     switch (action.type) {
     case getType(gameActions.setGameId):
-        return {...state, id: action.payload.gameId};
+        return {...state, gameId: action.payload.gameId};
     case getType(gameActions.setPlayerId):
         return {...state, playerId: action.payload.playerId};
     case getType(gameActions.setStatus):
