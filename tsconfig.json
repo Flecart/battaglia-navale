@@ -18,11 +18,11 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-        "@game/*": ["./model/battleship/*"],
+        "@game/*": ["src/model/battleship/*"],
+        "@components/*": ["src/components/*"],
+        "@flux/*": ["src/flux/*"],
         "@api/*": ["./pages/api/*"],
-        "@flux/*": ["./flux/*"],
         "@icons/*": ["./public/icons/*"],
-        "@components/*": ["./components/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

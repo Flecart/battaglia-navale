@@ -29,6 +29,11 @@ const CustomTableCell = styled(TableCell)<{ hoverable?: boolean }>`
 `;
 
 function Game() {
+    // TODO: fare una view che cambia a seconda dello stato del gioco (quindi ci saranno molte views)
+    // devo cercare di differenziare le views, e portarli da una cartella sì.
+    // quindi avrò tipo una cartella views che per ogni view avrà un file, e questo file in cui sto scrivendo ora
+    // farà un display delle view, a seconda dello stato del gioco.
+    // ok ottima idea.
     const dispatch = useDispatch();
     const ownBoard = useSelector(gameSelectors.getOwnboard);
     const enemyBoard = useSelector(gameSelectors.getEnemyboard);
