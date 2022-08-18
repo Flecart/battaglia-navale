@@ -13,3 +13,4 @@ export const setEnemyBoardCell = createAction('game/set_enemy_board_cell')<{x: n
 export const createGame = createAction('game/create_game')<void>();
 export const requestId = createAction('game/request_id')<{gameId: string}>();
 export const createGameAndRequestId = createAction('game/create_game_and_request_id')<void>();
+export const joinGame = createAction('game/join_game')<{gameId: string}>();

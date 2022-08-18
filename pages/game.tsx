@@ -4,9 +4,10 @@ import GameEnded from 'src/views/GameEnded';
 import GamePlaying from 'src/views/GamePlaying';
 import PlacingShips from 'src/views/PlacingShips';
 import SearchingForPlayers from 'src/views/SearchingForPlayers';
+import Router from 'next/router';
 import {GameStatus} from '@game/enums';
 import {useSelector} from 'react-redux';
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 
 function Game() {
     // TODO: fare una view che cambia a seconda dello stato del gioco (quindi ci saranno molte views)
@@ -16,6 +17,14 @@ function Game() {
     // ok ottima idea.
 
     const gameStatus = useSelector(gameSelectors.getStatus);
+    const gameId = useSelector(gameSelectors.getGameId);
+
+    useEffect(() => {
+        // don't want to be in the game if there is no game associated
+        if (!gameId) {
+            Router.replace('/');
+        }
+    }, [gameId]);
 
     const renderSwitch = useCallback(() => {
         switch (gameStatus) {

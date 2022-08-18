@@ -15,7 +15,7 @@ export default function SimpleTextForm(props: SimpleTextFormProps) {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        props.onSubmit(value);
+        props.onSubmit(value.trim());
         setValue('');
     };
 

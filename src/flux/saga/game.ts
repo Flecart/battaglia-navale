@@ -1,8 +1,10 @@
 import * as gameActions from '@flux/actions/game';
 import * as gameApi from '@flux/api/game';
 import * as gameOutput from '@api/game/outputs';
+import * as messageActions from '@flux/actions/message';
 import {takeEvery, put, call} from 'redux-saga/effects';
 import {GameStatus} from '@game/enums';
+import {ErrorType} from '@flux/StoreInterfaces';
 import {ActionType} from 'typesafe-actions';
 
 function* createGame() {
@@ -22,7 +24,10 @@ function* requestId(action: ActionType<typeof gameActions.requestId>) {
     const data: gameOutput.RequestId = yield call(gameApi.requestId, action.payload.gameId);
 
     if (data.data) {
+        yield put(messageActions.setErrorType({errorType: ErrorType.NoError}));
         yield put(gameActions.setPlayerId({playerId: data.data.playerId}));
+    } else if (data.error) {
+        yield put(messageActions.setErrorType({errorType: ErrorType.GameNotFound}));
     }
     return data.data?.playerId;
 }
@@ -34,7 +39,7 @@ function* createGameAndRequestId() {
 
 const gameSagas = [
     takeEvery(gameActions.createGame, createGame),
-    takeEvery(gameActions.requestId, requestId),
+    takeEvery([gameActions.requestId, gameActions.joinGame], requestId),
     takeEvery(gameActions.createGameAndRequestId, createGameAndRequestId),
 ];
 

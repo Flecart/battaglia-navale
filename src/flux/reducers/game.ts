@@ -1,5 +1,5 @@
 import * as gameActions from '@flux/actions/game';
-import {GameStore} from '@flux/store';
+import {GameStore} from '@flux/StoreInterfaces';
 import {ActionType, getType} from 'typesafe-actions';
 import {GameStatus} from '@game/enums';
 import {CellType} from '@game/enums';
