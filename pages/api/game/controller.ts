@@ -1,4 +1,4 @@
-import {Body, Post, ValidationPipe, Catch} from '@storyofams/next-api-decorators';
+import {Body, Post, ValidationPipe, Catch, Get, Param} from '@storyofams/next-api-decorators';
 import * as gameInput from '@api/game/inputs';
 import * as gameOutput from '@api/game/outputs';
 import {NextApiRequest, NextApiResponse} from 'next';
@@ -66,5 +66,12 @@ export default class GameHandler {
     public requestId(@Body(ValidationPipe) body: gameInput.RequestId): gameOutput.RequestId {
         const currentGame = GameModel.findGame(body.gameId);
         return {data: {playerId: currentGame.distributeId()}};
+    }
+
+    @Get('/status/:gameId')
+    @Catch(errorHandler)
+    public getGameStatus(@Param('gameId') gameId: string): gameOutput.GameStatus {
+        const currentGame = GameModel.findGame(gameId);
+        return {data: {status: currentGame.getStatus()}};
     }
 }

@@ -5,7 +5,6 @@ import Alert from '@mui/material/Alert';
 import Head from 'next/head';
 import SimpleTextForm from '@components/SimpleTextForm';
 import Router from 'next/router';
-import Link from 'next/link';
 import * as gameActions from '@flux/actions/game';
 import * as gameSelectors from '@flux/selectors/game';
 import * as messageSelectors from '@flux/selectors/message';

@@ -1,5 +1,5 @@
 import {CellType} from '@game/enums';
-
+import {GameStatus as Status} from '@game/enums';
 interface Error {
     error?: {
         message: string
@@ -34,5 +34,11 @@ export interface PlaceShip extends Error {
 export interface RequestId extends Error {
     data?: {
         playerId: string
+    }
+}
+
+export interface GameStatus extends Error {
+    data?: {
+        status: Status
     }
 }

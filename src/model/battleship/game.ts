@@ -131,4 +131,8 @@ export class Game {
     isGameOver(): boolean {
         return this.player1.hasLost() || this.player2.hasLost();
     }
+
+    getStatus(): GameStatus {
+        return this.gameStatus;
+    }
 }

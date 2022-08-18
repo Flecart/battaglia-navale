@@ -5,10 +5,13 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import * as gameSelectors from '@flux/selectors/game';
+import * as gameActions from '@flux/actions/game';
+import {GameStatus} from '@game/enums';
 import {Typography} from '@mui/material';
-import {useSelector} from 'react-redux';
-import {useCallback, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {useCallback, useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
+import {getGameStatus} from '@flux/api/game';
 
 const CenteredBox = styled(Box)`
     display: flex;
@@ -21,8 +24,22 @@ const RootContainer = styled(CenteredBox)`
 `;
 
 export default function SearchingForPlayers() {
+    const dispatch = useDispatch();
     const gameId = useSelector(gameSelectors.getGameId);
+
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    useEffect(() => {
+        // retry until game is on
+        const interval = setInterval(() => {
+            getGameStatus(gameId).then((data) => {
+                if (data.data && data.data.status !== GameStatus.WAITING_FOR_PLAYERS) {
+                    clearInterval(interval);
+                    dispatch(gameActions.setStatus({status: data.data.status}));
+                }
+            });
+        }, 3000);
+    }, []);
 
     const handleCopyId = useCallback(() => {
         setSnackbarOpen(true);

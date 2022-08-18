@@ -16,3 +16,7 @@ export async function requestId(gameId: string): Promise<gameOutput.RequestId> {
         }),
     }).then((res) => res.json());
 };
+
+export async function getGameStatus(gameId: string): Promise<gameOutput.GameStatus> {
+    return await fetch(`/api/game/status/${gameId}`).then((res) => res.json());
+}
